@@ -6,12 +6,13 @@ import (
 
 	"github.com/devin0910/go-rest/controllers"
 	"github.com/julienschmidt/httprouter"
+	mgo "gopkg.in/mgo.v2"
 )
 
 func main() {
 	r := httprouter.New()
 
-	uc := controllers.NewUserController()
+	uc := controllers.NewUserController(getSession())
 
 	r.GET("/user/:id", uc.GetUser)
 
@@ -24,4 +25,13 @@ func main() {
 	})
 
 	http.ListenAndServe("localhost:3000", r)
+}
+
+func getSession() *mgo.Session {
+	s, err := mgo.Dial("mongodb://121.40.58.115")
+
+	if err != nil {
+		panic(err)
+	}
+	return s
 }
